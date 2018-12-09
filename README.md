@@ -1,6 +1,6 @@
 # MariaDB
 
-These are docker images for [MariaDB](https://mariadb.org) database. Mainly, it's to manage sensitive data with **secrets** that was introduced by Docker
+These are docker images for [MariaDB](https://mariadb.org) database. Mainly, it's to manage sensitive data with **secrets** that was introduced by Docker.
 
 The base image is from [webhippie MariaDB](https://registry.hub.docker.com/u/webhippie/mariadb/). Furthermore, it running on an [Alpine Linux container](https://registry.hub.docker.com/u/webhippie/alpine/). Thank to him.
 
