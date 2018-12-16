@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-source ../rootfs/usr/bin/secret-helper.sh
+source ./rootfs/usr/bin/secret-helper.sh
 
 function teardown(){
     if [ -e fileWithContent ]; then
