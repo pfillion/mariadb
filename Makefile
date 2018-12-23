@@ -13,6 +13,8 @@ VERSION ?= latest
 IMAGE_NAME ?= mariadb
 CONTAINER_NAME ?= mariadb
 CONTAINER_INSTANCE ?= default
+VCS_REF=$(shell git rev-parse --short HEAD)
+BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%S")
 
 help: ## Show the Makefile help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -21,10 +23,18 @@ bats-test: ## Test bash scripts
 	bats $(TEST_FOLDER)
 
 docker-build: ## Build the image form Dockerfile
-	docker build -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
+	docker build \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg VCS_REF=$(VCS_REF) \
+		--build-arg VERSION=$(VERSION) \
+		-t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
 
 docker-rebuild: ## Rebuild the image form Dockerfile
-	docker build --no-cache -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
+	docker build  \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg VCS_REF=$(VCS_REF) \
+		--build-arg VERSION=$(VERSION) \
+		--no-cache -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
 
 docker-push: ## Push the image to a registry
 	docker push $(NS)/$(IMAGE_NAME):$(VERSION)

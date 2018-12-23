@@ -1,79 +1,68 @@
 # MariaDB
 
-These are docker images for [MariaDB](https://mariadb.org) database. Mainly, it's to manage sensitive data with **secrets** that was introduced by Docker.
+These are docker images for [MariaDB](https://mariadb.org) database. Mainly, it's to manage [healthcheck](https://docs.docker.com/engine/reference/builder/#healthcheck) with credential specified by **secrets**.
 
-The base image is from [webhippie MariaDB](https://registry.hub.docker.com/u/webhippie/mariadb/). Furthermore, it running on an [Alpine Linux container](https://registry.hub.docker.com/u/webhippie/alpine/). Thank to him.
+The base image is from official [MariaDB](https://hub.docker.com/_/mariadb).
 
 ## Versions
 
-* [latest](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:latest``` at [Docker Hub](https://registry.hub.docker.com/u/pfillion/mariadb/)
+* [latest](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:latest``` at [Docker Hub](https://hub.docker.com/r/pfillion/mariadb/)
 
 ## Volumes
 
-* /etc/mysql/conf.d
 * /var/lib/mysql
-* /var/lib/backup
 
 ## Ports
 
 * 3306
 
-## Available secret environment variables
+## Using a custom MySQL configuration file
 
-These variables can not be declared if their equivalents, without ```'_FILE'```, are declared too.
+The MariaDB startup configuration is specified in the file `/etc/mysql/my.cnf`, and that file in turn includes any files found in the `/etc/mysql/conf.d` directory that end with `.cnf`. Settings in files in this directory will augment and/or override settings in `/etc/mysql/my.cnf`. If you want to use a customized MySQL configuration, you can create your alternative configuration file in a directory on the host machine and then mount that directory location as `/etc/mysql/conf.d` inside the `mariadb` container.
 
-```bash
-ENV MARIADB_ROOT_PASSWORD_FILE # Required if MARIADB_ROOT_PASSWORD is not defined
-ENV MARIADB_USERNAME_FILE
-ENV MARIADB_PASSWORD_FILE
-ENV MARIADB_DATABASE_FILE
+If `/my/custom/config-file.cnf` is the path and name of your custom configuration file, you can start your `mariadb` container like this (note that only the directory path of the custom config file is used in this command):
+
+```console
+$ docker run --name some-mariadb -v /my/custom:/etc/mysql/conf.d -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mariadb:tag
 ```
 
-## Inherited environment variables from MariaDB base image
+This will start a new container `some-mariadb` where the MariaDB instance uses the combined startup settings from `/etc/mysql/my.cnf` and `/etc/mysql/conf.d/config-file.cnf`, with settings from the latter taking precedence.
 
-```bash
-ENV MARIADB_ROOT_PASSWORD # Required
-ENV MARIADB_USERNAME # Optional
-ENV MARIADB_PASSWORD # Optional
-ENV MARIADB_DATABASE # Optional
-ENV MARIADB_DEFAULT_CHARACTER_SET utf8
-ENV MARIADB_CHARACTER_SET_SERVER utf8
-ENV MARIADB_COLLATION_SERVER utf8_general_ci
-ENV MARIADB_KEY_BUFFER_SIZE 16M
-ENV MARIADB_MAX_ALLOWED_PACKET 1M
-ENV MARIADB_TABLE_OPEN_CACHE 64
-ENV MARIADB_SORT_BUFFER_SIZE 512K
-ENV MARIADB_NET_BUFFER_SIZE 8K
-ENV MARIADB_READ_BUFFER_SIZE 256K
-ENV MARIADB_READ_RND_BUFFER_SIZE 512K
-ENV MARIADB_MYISAM_SORT_BUFFER_SIZE 8M
-ENV MARIADB_LOG_BIN mysql-bin
-ENV MARIADB_BINLOG_FORMAT mixed
-ENV MARIADB_SERVER_ID 1
-ENV MARIADB_INNODB_DATA_FILE_PATH ibdata1:10M:autoextend
-ENV MARIADB_INNODB_BUFFER_POOL_SIZE 16M
-ENV MARIADB_INNODB_LOG_FILE_SIZE 5M
-ENV MARIADB_INNODB_LOG_BUFFER_SIZE 8M
-ENV MARIADB_INNODB_FLUSH_LOG_AT_TRX_COMMIT 1
-ENV MARIADB_INNODB_LOCK_WAIT_TIMEOUT 50
-ENV MARIADB_INNODB_USE_NATIVE_AIO 1
-ENV MARIADB_MAX_ALLOWED_PACKET 16M
-ENV MARIADB_KEY_BUFFER_SIZE 20M
-ENV MARIADB_SORT_BUFFER_SIZE 20M
-ENV MARIADB_READ_BUFFER 2M
-ENV MARIADB_WRITE_BUFFER 2M
-ENV MARIADB_MAX_CONNECTIONS 151
+## Environment Variables
+
+When you start the `mariadb` image, you can adjust the configuration of the MariaDB instance by passing one or more environment variables on the `docker run` command line. Do note that none of the variables below will have any effect if you start the container with a data directory that already contains a database: any pre-existing database will always be left untouched on container startup.
+
+### `MYSQL_ROOT_PASSWORD`
+
+This variable is mandatory and specifies the password that will be set for the MariaDB `root` superuser account. In the above example, it was set to `my-secret-pw`.
+
+### `MYSQL_DATABASE`
+
+This variable is optional and allows you to specify the name of a database to be created on image startup. If a user/password was supplied (see below) then that user will be granted superuser access ([corresponding to `GRANT ALL`](http://dev.mysql.com/doc/en/adding-users.html)) to this database.
+
+### `MYSQL_USER`, `MYSQL_PASSWORD`
+
+These variables are optional, used in conjunction to create a new user and to set that user's password. This user will be granted superuser permissions (see above) for the database specified by the `MYSQL_DATABASE` variable. Both variables are required for a user to be created.
+
+Do note that there is no need to use this mechanism to create the root superuser, that user gets created by default with the password specified by the `MYSQL_ROOT_PASSWORD` variable.
+
+### `MYSQL_ALLOW_EMPTY_PASSWORD`
+
+This is an optional variable. Set to `yes` to allow the container to be started with a blank password for the root user. *NOTE*: Setting this variable to `yes` is not recommended unless you really know what you are doing, since this will leave your MariaDB instance completely unprotected, allowing anyone to gain complete superuser access.
+
+### `MYSQL_RANDOM_ROOT_PASSWORD`
+
+This is an optional variable. Set to `yes` to generate a random initial password for the root user (using `pwgen`). The generated root password will be printed to stdout (`GENERATED ROOT PASSWORD: .....`).
+
+## Docker Secrets
+
+As an alternative to passing sensitive information via environment variables, `_FILE` may be appended to the previously listed environment variables, causing the initialization script to load the values for those variables from files present in the container. In particular, this can be used to load passwords from Docker secrets stored in `/run/secrets/<secret_name>` files. For example:
+
+```console
+$ docker run --name some-mysql -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-root -d mariadb:tag
 ```
 
-## Inherited environment variables from Alpine base image
-
-```bash
-ENV CRON_ENABLED true
-```
-
-## Contributing
-
-Fork -> Patch -> Push -> Pull Request
+Currently, this is only supported for `MYSQL_ROOT_PASSWORD`, `MYSQL_ROOT_HOST`, `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD`.
 
 ## Authors
 
