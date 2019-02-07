@@ -29,44 +29,31 @@ docker-build: ## Build the image form Dockerfile
 		--build-arg VERSION=$(VERSION) \
 		-t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
 
-docker-rebuild: ## Rebuild the image form Dockerfile
-	docker build  \
-		--build-arg BUILD_DATE=$(BUILD_DATE) \
-		--build-arg VCS_REF=$(VCS_REF) \
-		--build-arg VERSION=$(VERSION) \
-		--no-cache -t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
-
 docker-push: ## Push the image to a registry
+ifdef DOCKER_USERNAME
+	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+endif
 	docker push $(NS)/$(IMAGE_NAME):$(VERSION)
     
-docker-shell: ## Run shell command in the container
-	docker run --rm --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) -i -t $(PORTS) $(VOLUMES) $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION) /bin/sh
-
-docker-run: ## Run the container
-	docker run --rm --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) $(PORTS) $(VOLUMES) $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION)
+docker-shell: docker-start ## Run shell command in the container
+	docker exec -it $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) /bin/sh
+	$(docker_stop)
 
 docker-start: ## Run the container in background
-	docker run -d --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) $(PORTS) $(VOLUMES) $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION)
+	docker run -d --rm --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) $(PORTS) $(VOLUMES) -e 'MYSQL_ALLOW_EMPTY_PASSWORD=1' $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION)
 
 docker-stop: ## Stop the container
+	$(docker_stop)
+
+docker-test: ## Run docker container tests
+	container-structure-test test --image $(NS)/$(IMAGE_NAME):$(VERSION) --config tests/config.yaml
+
+build: docker-build ## Build all
+
+test: bats-test docker-test ## Run all tests
+
+release: build test docker-push ## Build and push the image to a registry
+
+define docker_stop
 	docker stop $(CONTAINER_NAME)-$(CONTAINER_INSTANCE)
-
-docker-rm: ## Remove the container
-	docker rm $(CONTAINER_NAME)-$(CONTAINER_INSTANCE)
-
-build: ## Build all
-	make docker-build
-
-rebuild: ## Build all
-	make docker-rebuild
-
-run: ## Run all
-	make docker-run
-
-test: ## Run all tests
-	make bats-test
-
-release: ## Build and push the image to a registry
-	make build
-	make test
-	make docker-push
+endef

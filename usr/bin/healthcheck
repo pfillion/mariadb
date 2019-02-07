@@ -9,7 +9,7 @@ export_secret_from_env "MYSQL_USER"
 export_secret_from_env "MYSQL_PASSWORD"
 
 MYSQL_USER=${MYSQL_USER:-root}
-MYSQL_PASSWORD=${MYSQL_PASSWORD:-${MARIADB_ROOT_PASSWORD}}
+MYSQL_PASSWORD=${MYSQL_PASSWORD:-${MYSQL_ROOT_PASSWORD}}
 
 CHECK="$(echo 'SELECT 1;' | mysql -h127.0.0.1 -u${MYSQL_USER} -p${MYSQL_PASSWORD} 2>/dev/null | head -n1)"
 

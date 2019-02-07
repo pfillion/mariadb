@@ -1,0 +1,41 @@
+schemaVersion: "2.0.0"
+
+metadataTest:
+  labels:
+    - key: 'org.label-schema.build-date'
+      value: '.*'
+      isRegex: true
+    - key: 'org.label-schema.vcs-ref'
+      value: '.*'
+      isRegex: true  
+    - key: 'org.label-schema.version'
+      value: '.*'
+      isRegex: true    
+  exposedPorts: ["3306"]
+  volumes: ["/var/lib/mysql"]
+  entrypoint: ["docker-entrypoint.sh"]
+  cmd: ["mysqld"]
+  workdir: ""
+
+fileExistenceTests:
+- name: 'healthcheck'
+  path: '/usr/bin/healthcheck'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'
+- name: 'secret-helper'
+  path: '/usr/bin/secret-helper.sh'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'
+
+commandTests:
+  - name: "mysql is functional"
+    command: "mysql"
+    args: ["-V"]
+    expectedOutput: ["mysql  Ver .*"]
+    exitCode: 0

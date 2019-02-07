@@ -16,21 +16,21 @@ function teardown(){
     
     run get_secret_from_env "ENV_VALUE"
     
-    [ "$output" == "file_value" ]
+    [ "$output" = "file_value" ]
     [ "$status" -eq 0 ]
 }
 
 @test "Given env not exist, when get secret from env, then nothing is returned" {
     run get_secret_from_env "ENV_VALUE"
     
-    [ "$output" == "" ]
+    [ "$output" = "" ]
     [ "$status" -eq 0 ]
 }
 
 @test "Given env not exist, when get secret from env with default value, then default value is returned" {
     run get_secret_from_env "ENV_VALUE" "default_value"
     
-    [ "$output" == "default_value" ]
+    [ "$output" = "default_value" ]
     [ "$status" -eq 0 ]
 } 
 
@@ -39,7 +39,7 @@ function teardown(){
     
     run get_secret_from_env "ENV_VALUE"
     
-    [ "$output" == "value" ]
+    [ "$output" = "value" ]
     [ "$status" -eq 0 ]
 }
 
@@ -50,7 +50,7 @@ function teardown(){
     
     run get_secret_from_env "ENV_VALUE"
     
-    [ "$output" == "Only one of both variable 'ENV_VALUE' and 'ENV_VALUE_FILE' must be set." ]
+    [ "$output" = "Only one of both variable 'ENV_VALUE' and 'ENV_VALUE_FILE' must be set." ]
     [ "$status" -eq 1 ]
 }
 
@@ -59,7 +59,7 @@ function teardown(){
     
     run get_secret_from_env "ENV_VALUE"
  
-    [ "$output" == "The file 'fileWithContent' in environnement variable 'ENV_VALUE_FILE' not exist." ]
+    [ "$output" = "The file 'fileWithContent' in environnement variable 'ENV_VALUE_FILE' not exist." ]
     [ "$status" -eq 1 ]
 }
 
@@ -70,7 +70,7 @@ function teardown(){
     export_secret_from_env "ENV_VALUE"
    
     [ "$?" -eq 0 ]
-    [ "$ENV_VALUE" == "file_value" ]
+    [ "$ENV_VALUE" = "file_value" ]
 }
 
 @test "Given secret file not exist, when export secret from env, then error is returned" {
