@@ -12,6 +12,8 @@ The base image is from official [MariaDB](https://hub.docker.com/_/mariadb).
 ## Versions
 
 * [latest](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:latest``` at [Docker Hub](https://hub.docker.com/r/pfillion/mariadb/)
+* [10.3](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:10.3``` at [Docker Hub](https://hub.docker.com/r/pfillion/mariadb/)
+* [10.1](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:10.1``` at [Docker Hub](https://hub.docker.com/r/pfillion/mariadb/)
 
 ## Volumes
 
