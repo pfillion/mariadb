@@ -1,10 +1,12 @@
 ARG VERSION
+ARG BUILD_DATE
+ARG VCS_REF
+
+FROM pfillion/mobycron:latest as mobycron
+
 FROM mariadb:$VERSION
 
 # Build-time metadata as defined at http://label-schema.org
-ARG VERSION
-ARG BUILD_DATE
-ARG VCS_REF
 LABEL \
     org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.name="mariadb" \
@@ -16,4 +18,10 @@ LABEL \
     org.label-schema.version=$VERSION \
     org.label-schema.schema-version="1.0"
 
-ADD usr /usr
+ADD rootfs /    
+COPY --from=mobycron /usr/bin/mobycron /usr/bin
+
+VOLUME [ "/var/mariadb/backup/" ]
+
+ENTRYPOINT [ "entrypoint.sh" ]
+CMD ["mysqld"]

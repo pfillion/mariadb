@@ -18,6 +18,7 @@ The base image is from official [MariaDB](https://hub.docker.com/_/mariadb).
 ## Volumes
 
 * /var/lib/mysql
+* /var/mariadb/backup
 
 ## Ports
 
@@ -61,6 +62,10 @@ This is an optional variable. Set to `yes` to allow the container to be started 
 
 This is an optional variable. Set to `yes` to generate a random initial password for the root user (using `pwgen`). The generated root password will be printed to stdout (`GENERATED ROOT PASSWORD: .....`).
 
+### `MOBYCRON_ENABLED`
+
+This is an optional variable. Set to `true` or `1` to enable mobycron deamon. The configuration is specified in the file `/configs/config.json`. By default, this configuration includes a daily backup of the server. The compressed backup file is created in the volume `/var/mariadb/backup`.
+
 ## Docker Secrets
 
 As an alternative to passing sensitive information via environment variables, `_FILE` may be appended to the previously listed environment variables, causing the initialization script to load the values for those variables from files present in the container. In particular, this can be used to load passwords from Docker secrets stored in `/run/secrets/<secret_name>` files. For example:
@@ -70,6 +75,18 @@ $ docker run --name some-mysql -e MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql-ro
 ```
 
 Currently, this is only supported for `MYSQL_ROOT_PASSWORD`, `MYSQL_ROOT_HOST`, `MYSQL_DATABASE`, `MYSQL_USER`, and `MYSQL_PASSWORD`.
+
+## Docker Healthcheck
+
+This container provides a script that instructs Docker how to check if the mariadb server still working. For example:
+
+```yaml
+healthcheck:
+    test: ["CMD", "/usr/bin/healthcheck"]
+    interval: 30s
+    timeout: 30s
+    retries: 5
+```
 
 ## Authors
 

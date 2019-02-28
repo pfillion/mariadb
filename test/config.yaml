@@ -12,30 +12,37 @@ metadataTest:
       value: '.*'
       isRegex: true    
   exposedPorts: ["3306"]
-  volumes: ["/var/lib/mysql"]
-  entrypoint: ["docker-entrypoint.sh"]
+  volumes: ["/var/lib/mysql", "/var/mariadb/backup/"]
+  entrypoint: ["entrypoint.sh"]
   cmd: ["mysqld"]
   workdir: ""
 
 fileExistenceTests:
+- name: 'backup.sh'
+  path: '/usr/local/bin/backup.sh'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'
+- name: 'entrypoint'
+  path: '/usr/local/bin/entrypoint.sh'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'
 - name: 'healthcheck'
-  path: '/usr/bin/healthcheck'
+  path: '/usr/local/bin/healthcheck'
   shouldExist: true
   permissions: '-rwxr-xr-x'
   uid: 0
   gid: 0
   isExecutableBy: 'group'
 - name: 'secret-helper'
-  path: '/usr/bin/secret-helper.sh'
+  path: '/usr/local/bin/secret-helper.sh'
   shouldExist: true
   permissions: '-rwxr-xr-x'
   uid: 0
   gid: 0
   isExecutableBy: 'group'
-
-commandTests:
-  - name: "mysql is functional"
-    command: "mysql"
-    args: ["-V"]
-    expectedOutput: ["mysql  Ver .*"]
-    exitCode: 0

@@ -5,7 +5,7 @@ SHELL = /bin/sh
 .DEFAULT_GOAL := help
 
 # Bats parameters
-TEST_FOLDER ?= $(shell pwd)/tests
+TEST_FOLDER ?= $(shell pwd)/test
 
 # Docker parameters
 NS ?= pfillion
@@ -36,7 +36,7 @@ endif
 	docker push $(NS)/$(IMAGE_NAME):$(VERSION)
     
 docker-shell: docker-start ## Run shell command in the container
-	docker exec -it $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) /bin/sh
+	docker exec -it $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) /bin/bash
 	$(docker_stop)
 
 docker-start: ## Run the container in background
@@ -46,7 +46,7 @@ docker-stop: ## Stop the container
 	$(docker_stop)
 
 docker-test: ## Run docker container tests
-	container-structure-test test --image $(NS)/$(IMAGE_NAME):$(VERSION) --config tests/config.yaml
+	container-structure-test test --image $(NS)/$(IMAGE_NAME):$(VERSION) --config $(TEST_FOLDER)/config.yaml
 
 build: docker-build ## Build all
 
