@@ -24,7 +24,7 @@ steps:
   - name: docker_volume
     path: /var/run
   commands:
-  - ls -lahR test/test_helper/
+  - ls -lahR
   # - make test
   # - make VERSION=10.3 test
   # - make VERSION=10.1 test
