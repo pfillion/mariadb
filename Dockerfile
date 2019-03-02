@@ -1,11 +1,12 @@
 ARG VERSION
-ARG BUILD_DATE
-ARG VCS_REF
 
 FROM pfillion/mobycron:latest as mobycron
 
 FROM mariadb:$VERSION
 
+ARG VERSION
+ARG BUILD_DATE
+ARG VCS_REF
 # Build-time metadata as defined at http://label-schema.org
 LABEL \
     org.label-schema.build-date=$BUILD_DATE \
