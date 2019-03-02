@@ -6,6 +6,7 @@ steps:
   image: docker:git
   commands:
   - git submodule update --recursive --remote
+  - git submodule status --recursiv
 
 # - name: build
 #   image: pfillion/drone-dind
