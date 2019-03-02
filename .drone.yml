@@ -1,25 +1,16 @@
 kind: pipeline
 name: main
 
-clone:
-  depth: 50
-
 steps:
-- name: git-submodules
-  image: docker:git
+- name: build
+  image: pfillion/drone-dind
+  volumes:
+  - name: docker_volume
+    path: /var/run
   commands:
-  - git submodule update --recursive --remote
-  - git submodule status --recursive
-
-# - name: build
-#   image: pfillion/drone-dind
-#   volumes:
-#   - name: docker_volume
-#     path: /var/run
-#   commands:
-#   - make build
-#   - make VERSION=10.3 build
-#   - make VERSION=10.1 build
+  - make build
+  - make VERSION=10.3 build
+  - make VERSION=10.1 build
 
 - name: test
   image: pfillion/drone-dind
@@ -27,31 +18,30 @@ steps:
   - name: docker_volume
     path: /var/run
   commands:
-  - ls -lahR
-  # - make test
-  # - make VERSION=10.3 test
-  # - make VERSION=10.1 test
+  - make test
+  - make VERSION=10.3 test
+  - make VERSION=10.1 test
 
-# - name: docker-push
-#   image: pfillion/drone-dind
-#   volumes:
-#   - name: docker_volume
-#     path: /var/run
-#   environment:
-#     DOCKER_USERNAME:
-#       from_secret: docker_username
-#     DOCKER_PASSWORD:
-#       from_secret: docker_password
-#   commands:
-#   - make docker-push
-#   - make VERSION=10.3 docker-push
-#   - make VERSION=10.1 docker-push
+- name: docker-push
+  image: pfillion/drone-dind
+  volumes:
+  - name: docker_volume
+    path: /var/run
+  environment:
+    DOCKER_USERNAME:
+      from_secret: docker_username
+    DOCKER_PASSWORD:
+      from_secret: docker_password
+  commands:
+  - make docker-push
+  - make VERSION=10.3 docker-push
+  - make VERSION=10.1 docker-push
 
-# - name: notify-microbadger
-#   image: plugins/webhook
-#   settings:
-#     urls:
-#       from_secret: webhook_urls
+- name: notify-microbadger
+  image: plugins/webhook
+  settings:
+    urls:
+      from_secret: webhook_urls
 
 services:
 - name: docker
