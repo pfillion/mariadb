@@ -1,10 +1,6 @@
 kind: pipeline
 name: main
 
-workspace:
-  base: /go
-  path: src/github.com/pfillion/mariadb
-
 steps:
 - name: git-submodules
   image: docker:git
