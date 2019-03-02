@@ -6,6 +6,11 @@ workspace:
   path: src/github.com/pfillion/mariadb
 
 steps:
+- name: git-submodules
+  image: docker:git
+  commands:
+  - git submodule update --recursive --remote
+
 - name: build
   image: pfillion/drone-dind
   volumes:
