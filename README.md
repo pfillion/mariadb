@@ -82,7 +82,7 @@ This container provides a script that instructs Docker how to check if the maria
 
 ```yaml
 healthcheck:
-    test: ["CMD", "/usr/bin/healthcheck"]
+    test: ["CMD", "/usr/local/bin/healthcheck"]
     interval: 30s
     timeout: 30s
     retries: 5
