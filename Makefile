@@ -5,7 +5,7 @@ SHELL = /bin/sh
 .DEFAULT_GOAL := help
 
 # Bats parameters
-TEST_FOLDER ?= $(shell pwd)/test
+TEST_FOLDER ?= $(shell pwd)/tests
 
 # Docker parameters
 NS ?= pfillion
