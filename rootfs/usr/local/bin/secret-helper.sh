@@ -21,20 +21,16 @@ get_secret_from_env() {
 	local var="$1"
 	local fileVar="${var}_FILE"
 	local def="${2:-}"
-	if [ "${!var:-}" ] && [ "${!fileVar:-}" ]; then
-		echo "Only one of both variable '$var' and '$fileVar' must be set."
-		exit 1
-	fi
 	val="$def"
-	if [ "${!var:-}" ]; then
-		val="${!var}"
-	elif [ "${!fileVar:-}" ]; then
+	if [ "${!fileVar:-}" ]; then
 		if [ -e "${!fileVar}" ]; then
 			val="$(<"${!fileVar}")"
 		else
 			echo "The file '${!fileVar}' in environnement variable '$fileVar' not exist."
 			exit 1
 		fi
+	elif [ "${!var:-}" ]; then
+		val="${!var}"
 	fi
 	echo $val
 }

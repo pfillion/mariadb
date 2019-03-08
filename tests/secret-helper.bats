@@ -45,15 +45,15 @@ function teardown(){
     assert_success
 }
 
-@test "Given both env exist, when get secret from env, then error is returned" {
+@test "Given both env exist, when get secret from env, then file content is returned" {
     echo "file_value" > fileWithContent
     export ENV_VALUE_FILE="fileWithContent"
     export ENV_VALUE="value"
     
     run get_secret_from_env "ENV_VALUE"
     
-    assert_output "Only one of both variable 'ENV_VALUE' and 'ENV_VALUE_FILE' must be set."
-    assert_failure
+    assert_output 'file_value'
+    assert_success
 }
 
 @test "Given file not exist, when get secret from env, then error is returned" {
