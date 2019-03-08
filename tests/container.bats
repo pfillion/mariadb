@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+NS=${NS:-pfillion}
+IMAGE_NAME=${IMAGE_NAME:-mariadb}
 VERSION=${VERSION:-latest}
 CONTAINER_NAME="mariadb-${VERSION}"
 
@@ -35,7 +37,7 @@ function teardown(){
 }
 
 @test "healthcheck" {
-    docker run -d --name ${CONTAINER_NAME} -e 'MYSQL_ROOT_PASSWORD=rootpw' -e 'MYSQL_USER=foo' -e 'MYSQL_PASSWORD=bar' pfillion/mariadb:${VERSION}
+    docker run -d --name ${CONTAINER_NAME} -e 'MYSQL_ROOT_PASSWORD=rootpw' -e 'MYSQL_USER=foo' -e 'MYSQL_PASSWORD=bar' ${NS}/${IMAGE_NAME}:${VERSION}
     retry 30 1 is_ready
     
     # Given invalid user, when check health, then login failed and 1 is returned.
@@ -53,7 +55,7 @@ function teardown(){
 
 @test "entrypoint" {
     # Given mysqld command to the entry point, when start container, then only mysqld process is started.
-    docker run -d --name ${CONTAINER_NAME} --entrypoint entrypoint.sh -e 'MYSQL_ROOT_PASSWORD=rootpw' pfillion/mariadb:${VERSION} mysqld
+    docker run -d --name ${CONTAINER_NAME} --entrypoint entrypoint.sh -e 'MYSQL_ROOT_PASSWORD=rootpw' ${NS}/${IMAGE_NAME}:${VERSION} mysqld
    	run docker top ${CONTAINER_NAME}
 	assert_output -p 'mysqld'
 	refute_output -p 'mobycron'
@@ -81,7 +83,7 @@ function teardown(){
 }
 
 @test "backup" {
-    docker run -d --name ${CONTAINER_NAME} -e 'MYSQL_ROOT_PASSWORD=rootpw' pfillion/mariadb:${VERSION}
+    docker run -d --name ${CONTAINER_NAME} -e 'MYSQL_ROOT_PASSWORD=rootpw' ${NS}/${IMAGE_NAME}:${VERSION}
     retry 30 1 is_ready
 
     # Given a root password, when backing up the server, then compressed backup file is created in a new folder
