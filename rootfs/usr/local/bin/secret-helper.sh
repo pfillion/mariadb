@@ -4,7 +4,7 @@ shopt -s nullglob
 
 #######################################
 # Get secret in file from the environnement variable.
-# Exemple:
+# Example:
 # The container read the password in this env: ROOT_PASSWORD
 # The secret file is must be creted with '_FILE' suffix: ROOT_PASSWORD_FILE
 # Call get_secret_from_env 'ROOT_PASSWORD' and it will read secret file stored in ROOT_PASSWORD_FILE.
