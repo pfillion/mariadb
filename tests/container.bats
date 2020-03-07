@@ -84,7 +84,7 @@ function teardown(){
 
 @test "backup" {
     docker run -d --name ${CONTAINER_NAME} -e 'MYSQL_ROOT_PASSWORD=rootpw' ${NS}/${IMAGE_NAME}:${VERSION}
-    retry 30 1 is_ready
+    retry 60 1 is_ready
 
     # Given a root password, when backing up the server, then compressed backup file is created in a new folder
     run docker exec ${CONTAINER_NAME} backup.sh
