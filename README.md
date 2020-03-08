@@ -5,6 +5,10 @@
 [![microbadger image](https://images.microbadger.com/badges/version/pfillion/mariadb.svg)](https://microbadger.com/images/pfillion/mariadb "Get your own version badge on microbadger.com")
 [![microbadger image](https://images.microbadger.com/badges/commit/pfillion/mariadb.svg)](https://microbadger.com/images/pfillion/mariadb "Get your own commit badge on microbadger.com")
 
+TODO:
+* Supporter le FULL RESTORE au démarrage du container
+* Un mode qui permet de tester des backups via mobycron par dockerjob
+
 These are docker images for [MariaDB](https://mariadb.org) database. Mainly, it's to manage [healthcheck](https://docs.docker.com/engine/reference/builder/#healthcheck) with credential specified by **secrets**.
 
 The base image is from official [MariaDB](https://hub.docker.com/_/mariadb).
