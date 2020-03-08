@@ -32,7 +32,7 @@ get_secret_from_env() {
 	elif [ "${!var:-}" ]; then
 		val="${!var}"
 	fi
-	echo $val
+	echo "$val"
 }
 
 #######################################

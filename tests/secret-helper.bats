@@ -83,3 +83,12 @@ function teardown(){
     assert_output "The file 'fileWithContent' in environnement variable 'ENV_VALUE_FILE' not exist."
     assert_failure
 }
+
+@test "Given env with special characters, when get secret from env, then value of env is returned without reinterpretation" {
+    export ENV_VALUE="?"
+    
+    run get_secret_from_env "ENV_VALUE"
+    
+    assert_output '?'
+    assert_success
+}
