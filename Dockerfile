@@ -1,22 +1,25 @@
-ARG VERSION
+ARG CURRENT_VERSION_MICRO
 
 FROM pfillion/mobycron:latest as mobycron
-FROM mariadb:$VERSION
+FROM mariadb:$CURRENT_VERSION_MICRO
 
-ARG VERSION
-ARG BUILD_DATE
-ARG VCS_REF
+# Build-time metadata as defined at https://github.com/opencontainers/image-spec
+ARG DATE
+ARG CURRENT_VERSION_MICRO
+ARG COMMIT
+ARG AUTHOR
 
 LABEL \
-    org.label-schema.build-date=$BUILD_DATE \
-    org.label-schema.name="mariadb" \
-    org.label-schema.description="These are docker images for MariaDB." \
-    org.label-schema.url="https://hub.docker.com/r/pfillion/mariadb" \
-    org.label-schema.vcs-ref=$VCS_REF \
-    org.label-schema.vcs-url="https://github.com/pfillion/mariadb" \
-    org.label-schema.vendor="pfillion" \
-    org.label-schema.version=$VERSION \
-    org.label-schema.schema-version="1.0"
+    org.opencontainers.image.created=$DATE \
+    org.opencontainers.image.url="https://hub.docker.com/r/pfillion/mariadb" \
+    org.opencontainers.image.source="https://github.com/pfillion/mariadb" \
+    org.opencontainers.image.version=$CURRENT_VERSION_MICRO \
+    org.opencontainers.image.revision=$COMMIT \
+    org.opencontainers.image.vendor="pfillion" \
+    org.opencontainers.image.title="mariadb" \
+    org.opencontainers.image.description="These are docker images for MariaDB." \
+    org.opencontainers.image.authors=$AUTHOR \
+    org.opencontainers.image.licenses="MIT"
 
 COPY rootfs /    
 COPY --from=mobycron /usr/bin/mobycron /usr/bin

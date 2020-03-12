@@ -26,7 +26,7 @@ get_secret_from_env() {
 		if [ -e "${!fileVar}" ]; then
 			val="$(<"${!fileVar}")"
 		else
-			echo "The file '${!fileVar}' in environnement variable '$fileVar' not exist."
+			echo "The file '${!fileVar}' in environment variable '$fileVar' doesn't exist." >&2
 			exit 1
 		fi
 	elif [ "${!var:-}" ]; then

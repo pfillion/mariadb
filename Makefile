@@ -1,20 +1,31 @@
 SHELL = /bin/sh
-.SUFFIXES:
-.SUFFIXES: .c .o
 .PHONY: help
 .DEFAULT_GOAL := help
+
+# Version
+VERSION ?= 10.4.12
+VERSION_PARTS := $(subst ., ,$(VERSION))
+
+MAJOR := $(word 1,$(VERSION_PARTS))
+MINOR := $(word 2,$(VERSION_PARTS))
+MICRO := $(word 3,$(VERSION_PARTS))
+
+CURRENT_VERSION_MICRO := $(MAJOR).$(MINOR).$(MICRO)
+CURRENT_VERSION_MINOR := $(MAJOR).$(MINOR)
+CURRENT_VERSION_MAJOR := $(MAJOR)
+
+DATE = $(shell date -u +"%Y-%m-%dT%H:%M:%S")
+COMMIT := $(shell git rev-parse HEAD)
+AUTHOR := $(firstword $(subst @, ,$(shell git show --format="%aE" $(COMMIT))))
 
 # Bats parameters
 TEST_FOLDER ?= $(shell pwd)/tests
 
 # Docker parameters
 NS ?= pfillion
-VERSION ?= latest
 IMAGE_NAME ?= mariadb
 CONTAINER_NAME ?= mariadb
 CONTAINER_INSTANCE ?= default
-VCS_REF=$(shell git rev-parse --short HEAD)
-BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%S")
 
 help: ## Show the Makefile help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -24,16 +35,24 @@ bats-test: ## Test bash scripts
 
 docker-build: ## Build the image form Dockerfile
 	docker build \
-		--build-arg BUILD_DATE=$(BUILD_DATE) \
-		--build-arg VCS_REF=$(VCS_REF) \
-		--build-arg VERSION=$(VERSION) \
-		-t $(NS)/$(IMAGE_NAME):$(VERSION) -f Dockerfile .
+		--build-arg DATE=$(DATE) \
+		--build-arg CURRENT_VERSION_MICRO=$(CURRENT_VERSION_MICRO) \
+		--build-arg COMMIT=$(COMMIT) \
+		--build-arg AUTHOR=$(AUTHOR) \
+		-t $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MICRO) \
+		-t $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MINOR) \
+		-t $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MAJOR) \
+		-t $(NS)/$(IMAGE_NAME):latest \
+		-f Dockerfile .
 
 docker-push: ## Push the image to a registry
 ifdef DOCKER_USERNAME
-	echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
+	@echo "$(DOCKER_PASSWORD)" | docker login -u "$(DOCKER_USERNAME)" --password-stdin
 endif
-	docker push $(NS)/$(IMAGE_NAME):$(VERSION)
+	docker push $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MICRO)
+	docker push $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MINOR)
+	docker push $(NS)/$(IMAGE_NAME):$(CURRENT_VERSION_MAJOR)
+	docker push $(NS)/$(IMAGE_NAME):latest
     
 docker-shell: docker-start ## Run shell command in the container
 	docker exec -it $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) /bin/bash
