@@ -1,9 +1,12 @@
 # MariaDB
 
 [![Build Status](https://drone.pfillion.com/api/badges/pfillion/mariadb/status.svg?branch=master)](https://drone.pfillion.com/pfillion/mariadb)
-[![microbadger image](https://images.microbadger.com/badges/image/pfillion/mariadb.svg)](https://microbadger.com/images/pfillion/mariadb "Get your own image badge on microbadger.com")
-[![microbadger image](https://images.microbadger.com/badges/version/pfillion/mariadb.svg)](https://microbadger.com/images/pfillion/mariadb "Get your own version badge on microbadger.com")
-[![microbadger image](https://images.microbadger.com/badges/commit/pfillion/mariadb.svg)](https://microbadger.com/images/pfillion/mariadb "Get your own commit badge on microbadger.com")
+![GitHub](https://img.shields.io/github/license/pfillion/mariadb)
+[![GitHub last commit](https://img.shields.io/github/last-commit/pfillion/mariadb?logo=github)](https://github.com/pfillion/mariadb "GitHub projet")
+
+[![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/pfillion/mariadb/latest?logo=docker)](https://hub.docker.com/r/pfillion/mariadb "Docker Hub Repository")
+[![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/pfillion/mariadb/latest?logo=docker)](https://microbadger.com/images/pfillion/mariadb "Get your own commit badge on microbadger.com")
+[![MicroBadger Layers (tag)](https://img.shields.io/microbadger/layers/pfillion/mariadb/latest?logo=docker)](https://microbadger.com/images/pfillion/mariadb "Get your own commit badge on microbadger.com")
 
 These are docker images for [MariaDB](https://mariadb.org) database. Mainly, it's to manage [healthcheck](https://docs.docker.com/engine/reference/builder/#healthcheck) with credential specified by **secrets**.
 
@@ -13,7 +16,6 @@ The base image is from official [MariaDB](https://hub.docker.com/_/mariadb).
 
 * [latest](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:latest``` at [Docker Hub](https://hub.docker.com/r/pfillion/mariadb/)
 * [10.4](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:10.4``` at [Docker Hub](https://hub.docker.com/r/pfillion/mariadb/)
-* [10.3](https://github.com/pfillion/mariadb/tree/master) available as ```pfillion/mariadb:10.3``` at [Docker Hub](https://hub.docker.com/r/pfillion/mariadb/)
 
 ## Volumes
 

@@ -18,7 +18,6 @@ steps:
   - name: docker_volume
     path: /var/run
   commands:
-  - make test
   - make VERSION=10.4.12 test
 
 - name: docker-push
@@ -32,7 +31,6 @@ steps:
     DOCKER_PASSWORD:
       from_secret: docker_password
   commands:
-  - make docker-push
   - make VERSION=10.4.12 docker-push
 
 - name: notify-microbadger
