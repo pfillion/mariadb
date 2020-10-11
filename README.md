@@ -5,7 +5,7 @@
 [![GitHub last commit](https://img.shields.io/github/last-commit/pfillion/mariadb?logo=github)](https://github.com/pfillion/mariadb "GitHub projet")
 
 [![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/pfillion/mariadb/latest?logo=docker)](https://hub.docker.com/r/pfillion/mariadb "Docker Hub Repository")
-[![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/pfillion/mariadb/latest?logo=docker)](https://microbadger.com/images/pfillion/mariadb "Get your own commit badge on microbadger.com")
+[![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/pfillion/mariadb/latest?logo=docker)](https://hub.docker.com/r/pfillion/mariadb "Docker Hub Repository")
 [![MicroBadger Layers (tag)](https://img.shields.io/microbadger/layers/pfillion/mariadb/latest?logo=docker)](https://microbadger.com/images/pfillion/mariadb "Get your own commit badge on microbadger.com")
 
 These are docker images for [MariaDB](https://mariadb.org) database. Mainly, it's to manage [healthcheck](https://docs.docker.com/engine/reference/builder/#healthcheck) with credential specified by **secrets**.
