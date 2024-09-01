@@ -3,7 +3,7 @@ SHELL = /bin/sh
 .DEFAULT_GOAL := help
 
 # Version
-VERSION ?= 10.5.8
+VERSION ?= 11.5.2-noble
 VERSION_PARTS := $(subst ., ,$(VERSION))
 
 MAJOR := $(word 1,$(VERSION_PARTS))
@@ -31,9 +31,10 @@ help: ## Show the Makefile help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 bats-test: ## Test bash scripts
-	bats $(TEST_FOLDER)
+	bats --print-output-on-failure $(TEST_FOLDER)
 
 docker-build: ## Build the image form Dockerfile
+	chmod 755 -R ./rootfs/
 	docker build \
 		--build-arg DATE=$(DATE) \
 		--build-arg CURRENT_VERSION_MICRO=$(CURRENT_VERSION_MICRO) \
@@ -59,7 +60,7 @@ docker-shell: docker-start ## Run shell command in the container
 	$(docker_stop)
 
 docker-start: ## Run the container in background
-	docker run -d --rm --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) $(PORTS) $(VOLUMES) -e 'MYSQL_ALLOW_EMPTY_PASSWORD=1' $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION)
+	docker run -d --rm --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) $(PORTS) $(VOLUMES) -e 'MARIADB_ALLOW_EMPTY_PASSWORD=1' $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION)
 
 docker-stop: ## Stop the container
 	$(docker_stop)

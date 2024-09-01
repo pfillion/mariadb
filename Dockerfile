@@ -21,11 +21,11 @@ LABEL \
     org.opencontainers.image.authors=$AUTHOR \
     org.opencontainers.image.licenses="MIT"
 
-COPY rootfs /    
+COPY rootfs /
 COPY --from=mobycron /usr/bin/mobycron /usr/bin
 
 VOLUME [ "/var/mariadb/backup/" ]
 
 ENTRYPOINT [ "entrypoint.sh" ]
 
-CMD ["mysqld"]
+CMD ["mariadbd"]

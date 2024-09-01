@@ -35,10 +35,17 @@ metadataTest:
   exposedPorts: ["3306"]
   volumes: ["/var/lib/mysql", "/var/mariadb/backup/"]
   entrypoint: ["entrypoint.sh"]
-  cmd: ["mysqld"]
+  cmd: ["mariadbd"]
   workdir: ""
 
 fileExistenceTests:
+- name: 'config.json'
+  path: '/configs/config.json'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'
 - name: 'backup.sh'
   path: '/usr/local/bin/backup.sh'
   shouldExist: true
@@ -46,6 +53,13 @@ fileExistenceTests:
   uid: 0
   gid: 0
   isExecutableBy: 'group'
+- name: 'docker-entrypoint'
+  path: '/usr/local/bin/docker-entrypoint.sh'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'  
 - name: 'entrypoint'
   path: '/usr/local/bin/entrypoint.sh'
   shouldExist: true
@@ -53,13 +67,20 @@ fileExistenceTests:
   uid: 0
   gid: 0
   isExecutableBy: 'group'
-- name: 'healthcheck'
+- name: 'basic-healthcheck'
   path: '/usr/local/bin/healthcheck'
   shouldExist: true
   permissions: '-rwxr-xr-x'
   uid: 0
   gid: 0
   isExecutableBy: 'group'
+- name: 'healthcheck'
+  path: '/usr/local/bin/healthcheck.sh'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'  
 - name: 'secret-helper'
   path: '/usr/local/bin/secret-helper.sh'
   shouldExist: true
