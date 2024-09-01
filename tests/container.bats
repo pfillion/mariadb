@@ -14,7 +14,7 @@ function teardown(){
 
 @test "healthcheck" {
     docker run -d --name ${CONTAINER_NAME} -e 'MARIADB_ROOT_PASSWORD=rootpw' -e 'MARIADB_USER=foo' -e 'MARIADB_PASSWORD=bar' -e 'MARIADB_INITDB_SKIP_TZINFO=1' ${NS}/${IMAGE_NAME}:${VERSION}
-	sleep 15
+	sleep 30
     
     # Given invalid user, when check health, then login failed and 1 is returned.
     run docker exec -e 'MARIADB_USER=notfoo' ${CONTAINER_NAME} healthcheck
@@ -60,7 +60,7 @@ function teardown(){
 
 @test "backup" {
     docker run -d --name ${CONTAINER_NAME} -e 'MARIADB_ROOT_PASSWORD=rootpw' -e 'MARIADB_INITDB_SKIP_TZINFO=1' ${NS}/${IMAGE_NAME}:${VERSION}
-    sleep 15
+    sleep 30
 
     # Given a root password, when backing up the server, then compressed backup file is created in a new folder
     run docker exec ${CONTAINER_NAME} backup.sh
