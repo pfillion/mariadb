@@ -34,8 +34,8 @@ metadataTest:
       isRegex: true
   exposedPorts: ["3306"]
   volumes: ["/var/lib/mysql", "/var/mariadb/backup/"]
-  entrypoint: ["entrypoint.sh"]
-  cmd: ["mariadbd"]
+  entrypoint: [docker-entrypoint.sh]
+  cmd: ["supervisord"]
   workdir: ""
 
 fileExistenceTests:
@@ -60,21 +60,14 @@ fileExistenceTests:
   uid: 0
   gid: 0
   isExecutableBy: 'group'  
-- name: 'entrypoint'
-  path: '/usr/local/bin/entrypoint.sh'
-  shouldExist: true
-  permissions: '-rwxr-xr-x'
-  uid: 0
-  gid: 0
-  isExecutableBy: 'group'
-- name: 'basic-healthcheck'
+- name: 'healthcheck'
   path: '/usr/local/bin/healthcheck'
   shouldExist: true
   permissions: '-rwxr-xr-x'
   uid: 0
   gid: 0
   isExecutableBy: 'group'
-- name: 'healthcheck'
+- name: 'healthcheck of mariadb image'
   path: '/usr/local/bin/healthcheck.sh'
   shouldExist: true
   permissions: '-rwxr-xr-x'

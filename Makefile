@@ -60,7 +60,7 @@ docker-shell: docker-start ## Run shell command in the container
 	$(docker_stop)
 
 docker-start: ## Run the container in background
-	docker run -d --rm --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) $(PORTS) $(VOLUMES) -e 'MARIADB_ALLOW_EMPTY_PASSWORD=1' $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION)
+	docker run -d --rm --name $(CONTAINER_NAME)-$(CONTAINER_INSTANCE) $(PORTS) $(VOLUMES) -e 'MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1' $(ENV) $(NS)/$(IMAGE_NAME):$(VERSION)
 
 docker-stop: ## Stop the container
 	$(docker_stop)

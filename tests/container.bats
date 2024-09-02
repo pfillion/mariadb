@@ -29,35 +29,6 @@ function teardown(){
     assert_success
 }
 
-@test "entrypoint" {
-    # Given mysqld command to the entry point, when start container, then only mysqld process is started.
-    docker run -d --name ${CONTAINER_NAME} --entrypoint entrypoint.sh -e 'MARIADB_ROOT_PASSWORD=rootpw' -e 'MARIADB_INITDB_SKIP_TZINFO=1' ${NS}/${IMAGE_NAME}:${VERSION} mariadbd
-   	run docker top ${CONTAINER_NAME}
-	assert_output -p 'mariadbd'
-	refute_output -p 'mobycron'
-
-	# Given MOBYCRON_ENABLED=true, when execute the entry point, then mobycron process is started with backup job.
-	run docker exec -d -e 'MOBYCRON_ENABLED=true' ${CONTAINER_NAME} entrypoint.sh
-	run docker top ${CONTAINER_NAME}
-	assert_output -p 'mariadbd'
-	assert_output -p 'mobycron'
-
-	# Given MOBYCRON_ENABLED=1, when execute the entry point, then mobycron process is started.
-	run docker exec -d ${CONTAINER_NAME} pkill mobycron
-	run docker top ${CONTAINER_NAME}
-	refute_output -p 'mobycron'
-
-	run docker exec -d -e 'MOBYCRON_ENABLED=1' ${CONTAINER_NAME} entrypoint.sh
-	run docker top ${CONTAINER_NAME}
-	assert_output -p 'mariadbd'
-	assert_output -p 'mobycron'
-
-	# Given any command, when execute the entry point, then the process of the command is started.
-	run docker exec -d ${CONTAINER_NAME} entrypoint.sh sleep 10
-	run docker top ${CONTAINER_NAME}
-	assert_output -p 'sleep 10'
-}
-
 @test "backup" {
     docker run -d --name ${CONTAINER_NAME} -e 'MARIADB_ROOT_PASSWORD=rootpw' -e 'MARIADB_INITDB_SKIP_TZINFO=1' ${NS}/${IMAGE_NAME}:${VERSION}
     sleep 30
