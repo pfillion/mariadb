@@ -55,3 +55,17 @@ function teardown(){
 	run docker exec ${CONTAINER_NAME} gunzip -tv /var/mariadb/backup/backup.gz
 	assert_output -p 'OK'
 }
+
+@test "upgrade" {
+    docker run -d --name ${CONTAINER_NAME} -e 'MARIADB_ROOT_PASSWORD=rootpw' -e 'MARIADB_USER=foo' -e 'MARIADB_PASSWORD=bar' -e 'MARIADB_INITDB_SKIP_TZINFO=1' ${NS}/${IMAGE_NAME}:${VERSION}
+	sleep 30
+    
+    # Given valid root password, when upgrade database, the command stdout results.
+    run docker exec -e 'MARIADB_ROOT_PASSWORD=rootpw' ${CONTAINER_NAME} upgrade
+    assert_success
+
+    # Given invalid root password, when upgrade database, an error occured.
+    run docker exec -e 'MARIADB_ROOT_PASSWORD=invalid' ${CONTAINER_NAME} upgrade
+    assert_failure
+
+}

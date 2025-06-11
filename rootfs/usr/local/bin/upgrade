@@ -1,0 +1,9 @@
+#!/bin/bash
+set -eo pipefail
+shopt -s nullglob
+
+source /usr/local/bin/secret-helper.sh
+
+export_secret_from_env "MARIADB_ROOT_PASSWORD"
+
+mariadb-upgrade -h127.0.0.1 -uroot -p${MARIADB_ROOT_PASSWORD} --verbose
