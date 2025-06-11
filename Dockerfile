@@ -1,6 +1,6 @@
 ARG CURRENT_VERSION_MICRO
 
-FROM pfillion/mobycron:latest as mobycron
+FROM pfillion/mobycron:latest AS mobycron
 FROM mariadb:$CURRENT_VERSION_MICRO
 
 # Build-time metadata as defined at https://github.com/opencontainers/image-spec
