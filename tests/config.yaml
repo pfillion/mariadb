@@ -81,3 +81,10 @@ fileExistenceTests:
   uid: 0
   gid: 0
   isExecutableBy: 'group'
+- name: 'upgrade script'
+  path: '/usr/local/bin/upgrade'
+  shouldExist: true
+  permissions: '-rwxr-xr-x'
+  uid: 0
+  gid: 0
+  isExecutableBy: 'group'  

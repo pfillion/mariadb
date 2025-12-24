@@ -1,4 +1,4 @@
-ARG CURRENT_VERSION_MICRO
+ARG CURRENT_VERSION_MICRO=latest
 
 FROM pfillion/mobycron:latest AS mobycron
 FROM mariadb:$CURRENT_VERSION_MICRO
@@ -28,8 +28,8 @@ RUN apt-get update && \
     apt-get autoremove --yes && \
     rm -rf /var/lib/{apt,dpkg,cache,log}/
 
-COPY rootfs /
-COPY --from=mobycron /usr/bin/mobycron /usr/bin
+COPY --chmod=0755 rootfs /
+COPY --chmod=0755 --from=mobycron /usr/bin/mobycron /usr/bin
 
 VOLUME [ "/var/mariadb/backup/" ]
 

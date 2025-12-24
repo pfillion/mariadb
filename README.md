@@ -1,6 +1,6 @@
 # MariaDB
 
-[![Build Status](https://drone.pfillion.com/api/badges/pfillion/mariadb/status.svg?branch=master)](https://drone.pfillion.com/pfillion/mariadb)
+[![status-badge](https://woodpecker.pfillion.com/api/badges/5/status.svg)](https://woodpecker.pfillion.com/repos/5)
 ![GitHub](https://img.shields.io/github/license/pfillion/mariadb)
 [![GitHub last commit](https://img.shields.io/github/last-commit/pfillion/mariadb?logo=github)](https://github.com/pfillion/mariadb "GitHub projet")
 

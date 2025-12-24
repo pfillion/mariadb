@@ -2,6 +2,10 @@ SHELL = /bin/sh
 .PHONY: help
 .DEFAULT_GOAL := help
 
+ifeq ($(MODE_LOCAL),true)
+	GIT_CONFIG_GLOBAL := $(shell git config --global --add safe.directory /main/src > /dev/null)
+endif
+
 # Version
 VERSION ?= 11.8.2-noble
 VERSION_PARTS := $(subst ., ,$(VERSION))
@@ -71,6 +75,9 @@ docker-test: ## Run docker container tests
 build: docker-build ## Build all
 
 test: bats-test docker-test ## Run all tests
+
+test-ci: ## Run CI pipeline locally
+	woodpecker-cli exec --local --repo-trusted-volumes=true --env=MODE_LOCAL=true
 
 release: build test docker-push ## Build and push the image to a registry
 
