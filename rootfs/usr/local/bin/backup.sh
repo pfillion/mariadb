@@ -1,20 +1,28 @@
 #!/bin/bash
-set -eo pipefail
+set -euo pipefail
 shopt -s nullglob
 
 source /usr/local/bin/secret-helper.sh
-
 export_secret_from_env "MARIADB_ROOT_PASSWORD"
 
-if [ ! -d /var/mariadb/backup/ ]
-then
-    mkdir -p /var/mariadb/backup/
-fi
+BACKUP_DIR="/var/mariadb/backup"
+BACKUP_FILE="${BACKUP_DIR}/backup.gz"
+TMP_FILE="${BACKUP_DIR}/backup.gz.tmp"
 
-SOCKET="$(mariadb -uroot -p${MARIADB_ROOT_PASSWORD} -sse 'SHOW VARIABLES LIKE '\''socket'\'';' | awk '{print $2}')"
+mkdir -p "${BACKUP_DIR}"
 
+# Get Socket by query
+SOCKET="$(mariadb -uroot -p"${MARIADB_ROOT_PASSWORD}" -Nse 'SELECT @@socket;')"
+
+# Backup, write into tmp file before
 mariabackup --backup \
-   --user=root \
-   --password=${MARIADB_ROOT_PASSWORD} \
-   --socket=$SOCKET \
-   --stream=xbstream | gzip > /var/mariadb/backup/backup.gz
+  --user=root \
+  --password="${MARIADB_ROOT_PASSWORD}" \
+  --socket="${SOCKET}" \
+  --stream=xbstream \
+  | gzip -c > "${TMP_FILE}"
+
+mv -f "${TMP_FILE}" "${BACKUP_FILE}"
+
+# Flush binary logs after backup
+mariadb -uroot -p"${MARIADB_ROOT_PASSWORD}" -e "FLUSH BINARY LOGS;"
