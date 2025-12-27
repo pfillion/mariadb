@@ -15,7 +15,7 @@ mkdir -p "${BACKUP_DIR}"
 SOCKET="$(mariadb -uroot -p"${MARIADB_ROOT_PASSWORD}" -Nse 'SELECT @@socket;')"
 
 # Backup, write into tmp file before
-mariabackup --backup \
+mariadb-backup --backup \
   --user=root \
   --password="${MARIADB_ROOT_PASSWORD}" \
   --socket="${SOCKET}" \
