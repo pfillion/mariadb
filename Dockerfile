@@ -33,4 +33,4 @@ COPY --chmod=0755 --from=mobycron /usr/bin/mobycron /usr/bin
 
 VOLUME [ "/var/mariadb/backup/" ]
 
-CMD ["supervisord","-c","/etc/supervisord.conf"]
+CMD ["supervisord","-c","/etc/supervisor/supervisord.conf"]
