@@ -35,7 +35,7 @@ metadataTest:
   exposedPorts: ["3306"]
   volumes: ["/var/lib/mysql", "/var/mariadb/backup/"]
   entrypoint: [docker-entrypoint.sh]
-  cmd: ["supervisord","-c","/etc/supervisord.conf"]
+  cmd: ["supervisord","-c","/etc/supervisor/supervisord.conf"]
   workdir: ""
 
 fileExistenceTests:
